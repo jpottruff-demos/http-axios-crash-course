@@ -57,15 +57,27 @@ function removeTodo() {
     .catch(err => console.log(err))
 }
   
-  // SIMULTANEOUS DATA
-  function getData() {
-    console.log('Simultaneous Request');
-  }
+// SIMULTANEOUS DATA (Hitting 2 endpoints at the same time)
+function getData() {
+  axios.all([
+    axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5'),
+    axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5'),
+  ])
+  // Option 1
+    // .then(res => {
+    //   console.log(`TODOs: ${res[0]}`);
+    //   console.log(`Posts: ${res[1]}`);
+    //   showOutput(res[1]);
+    // })
+  // Option 2 - Cleaner
+    .then(axios.spread((todos, posts) => showOutput(posts)))
+    .catch(err => console.log(err)) 
+}
   
-  // CUSTOM HEADERS
-  function customHeaders() {
-    console.log('Custom Headers');
-  }
+// CUSTOM HEADERS
+function customHeaders() {
+  console.log('Custom Headers');
+}
   
   // TRANSFORMING REQUESTS & RESPONSES
   function transformResponse() {
@@ -83,6 +95,13 @@ function removeTodo() {
   }
   
   // INTERCEPTING REQUESTS & RESPONSES
+  // NOTE: this message will show up in the console and then the function will continue on as expected
+  axios.interceptors.request.use(config => {
+    console.log(`${config.method.toUpperCase()} request sent to ${config.url} at ${new Date().getTime()}`);
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
   
   // AXIOS INSTANCES
   
