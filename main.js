@@ -1,3 +1,10 @@
+// AXIOS GLOBALS
+// NOTE: token would probably come from server after logging in 
+// NOTE: Comment this in/out and check how the 'Config' section in the output changes
+axios.defaults.headers.common['X-Auth-Token'] = 'someOtherTokenValue';
+
+
+
 // GET REQUEST
 function getTodos() {
     // OPTION 1: The Long Way
@@ -21,7 +28,7 @@ function getTodos() {
       .catch(err => console.log(err))
 }
   
-  // POST REQUEST
+// POST REQUEST
 function addTodo() {
   axios
     .post('https://jsonplaceholder.typicode.com/todos', {
@@ -34,7 +41,7 @@ function addTodo() {
     .catch(err => console.log(err))
 }
   
-  // PUT/PATCH REQUEST
+// PUT/PATCH REQUEST
 function updateTodo() {
   // NOTE: the todo ID in the url
   // PUT will update the WHOLE thing (eg. overwrite)
@@ -49,7 +56,7 @@ function updateTodo() {
     .catch(err => console.log(err))
 }
   
-  // DELETE REQUEST
+// DELETE REQUEST
 function removeTodo() {
   axios
     .delete('https://jsonplaceholder.typicode.com/todos/1')
@@ -74,15 +81,44 @@ function getData() {
     .catch(err => console.log(err)) 
 }
   
-// CUSTOM HEADERS
+// CUSTOM HEADERS (might use for JWT)
 function customHeaders() {
-  console.log('Custom Headers');
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authroization: 'sometoken'
+    }
+  }
+
+  axios
+    .post('https://jsonplaceholder.typicode.com/todos', {
+      data: {
+        title: 'New Todo',
+        completed: false,
+
+      },
+    },
+    config)
+    .then(res => showOutput(res))
+    .catch(err => console.log(err))
 }
   
-  // TRANSFORMING REQUESTS & RESPONSES
-  function transformResponse() {
-    console.log('Transform Response');
-  }
+// TRANSFORMING REQUESTS & RESPONSES (this would work similarly for Request/Response)
+function transformResponse() {
+  const options = {
+    method: 'post',
+    url: 'https://jsonplaceholder.typicode.com/todos',
+    data: {
+      title: 'Oh hey there bud'
+    },
+    transformResponse: axios.defaults.transformResponse.concat(data => {
+      data.title = data.title.toUpperCase();
+      return data;
+    })
+  };
+
+  axios(options).then(res => showOutput(res));
+}
   
   // ERROR HANDLING
   function errorHandling() {
