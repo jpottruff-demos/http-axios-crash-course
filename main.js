@@ -22,7 +22,9 @@ function getTodos() {
     // NOTE: You could also just put the params in the URL
     axios
       .get('https://jsonplaceholder.typicode.com/todos', {
-        params: { _limit: 5 }
+        params: { _limit: 5 },
+        // NOTE: ms - this will always timeout
+        // timeout: 5
       })
       .then(res => showOutput(res))
       .catch(err => console.log(err))
@@ -124,7 +126,11 @@ function transformResponse() {
 function errorHandling() {
   axios
   .get('https://jsonplaceholder.typicode.com/todosssss', {
-    params: { _limit: 5 }
+    params: { _limit: 5 },
+    // validateStatus: function(status) {
+    //   // returns only if status is greater or equal to 500 (eg. Server errors)
+    //   return status < 500
+    // }
   })
   .then(res => showOutput(res))
   .catch(err => {
@@ -172,7 +178,25 @@ axios.interceptors.request.use(config => {
 });
   
 // AXIOS INSTANCES
+const instanceOne = axios.create({
+  // Custom Settings (other options - see docs)
+  baseURL: 'https://jsonplaceholder.typicode.com'
+});
+
+function comments() {
+  instanceOne.get('/comments')
+    .then(res => showOutput(res));
+}
   
+function todos() {
+  instanceOne.get('/todos')
+    .then(res => showOutput(res));
+}
+  
+function posts() {
+  instanceOne.get('/posts')
+    .then(res => showOutput(res));
+}
 
 
 
@@ -223,4 +247,7 @@ document
   .addEventListener('click', transformResponse);
 document.getElementById('error').addEventListener('click', errorHandling);
 document.getElementById('cancel').addEventListener('click', cancelToken);
+document.getElementById('comments').addEventListener('click', comments);
+document.getElementById('todos').addEventListener('click', todos);
+document.getElementById('posts').addEventListener('click', posts);
   
